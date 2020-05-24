@@ -4,13 +4,13 @@ import nmayorov.connection.Connection;
 import nmayorov.message.ChatMessageBuffer;
 import nmayorov.message.NameRequest;
 import nmayorov.message.ServerText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class ConnectionAcceptor implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(ConnectionAcceptor.class.getName());
+    private static Logger log = LoggerFactory.getLogger(ConnectionAcceptor.class);
 
     private final ArrayBlockingQueue<Connection> newConnections;
     ConnectionAcceptor(ArrayBlockingQueue<Connection> newConnections) {
@@ -21,10 +21,11 @@ class ConnectionAcceptor implements Runnable {
     public void run() {
         Connection connection;
         while (true) {
+            log.info("언제마다 도는 것인가?");
             try {
-                connection = newConnections.take();
+                connection = newConnections.take(); // 블록킹 메소드인가 보다;
             } catch (InterruptedException e) {
-                LOGGER.log(Level.WARNING, "Interrupting while taking connection from queue", e);
+                log.warn("Interrupting while taking connection from queue", e);
                 continue;
             }
             connection.messageBuffer = new ChatMessageBuffer();

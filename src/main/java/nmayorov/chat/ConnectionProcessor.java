@@ -1,35 +1,20 @@
 package nmayorov.chat;
 
-import nmayorov.command.Command;
-import nmayorov.command.CommandHandler;
-import nmayorov.command.CommandHandlerFactory;
-import nmayorov.command.Exit;
-import nmayorov.command.Help;
-import nmayorov.command.List;
-import nmayorov.command.Name;
+import nmayorov.command.*;
 import nmayorov.connection.Connection;
-import nmayorov.connection.DataReceived;
-import nmayorov.message.Disconnect;
-import nmayorov.message.Message;
-import nmayorov.message.MessageFactory;
-import nmayorov.message.MessageHandler;
-import nmayorov.message.MessageHandlerFactory;
-import nmayorov.message.NameAccepted;
-import nmayorov.message.NameRequest;
-import nmayorov.message.NameSent;
-import nmayorov.message.ServerText;
-import nmayorov.message.UserText;
 import nmayorov.connection.ConnectionEvent;
+import nmayorov.connection.DataReceived;
+import nmayorov.message.*;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 class ConnectionProcessor implements Runnable {
-    private static final Logger LOGGER = Logger.getLogger(ConnectionProcessor.class.getName());
-    private static final int HISTORY_SIZE = 100;
+    private static Logger LOGGER = LoggerFactory.getLogger(ConnectionAcceptor.class);
+    private static final int HISTORY_SIZE = 5;
 
     private final ArrayBlockingQueue<ConnectionEvent> connectionEvents;
     private final ConcurrentHashMap<String, Connection> knownConnections;
@@ -126,7 +111,7 @@ class ConnectionProcessor implements Runnable {
             try {
                 connectionEvent = connectionEvents.take();
             } catch (InterruptedException e) {
-                LOGGER.log(Level.WARNING,"Interrupted while taking ConnectionEvent from queue", e);
+                LOGGER.warn("Interrupted while taking ConnectionEvent from queue", e);
                 continue;
             }
 

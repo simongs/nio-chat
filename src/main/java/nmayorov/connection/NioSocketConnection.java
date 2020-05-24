@@ -8,7 +8,10 @@ import java.nio.channels.SocketChannel;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class NioSocketConnection extends Connection {
-    private enum Mode {READ, WRITE}
+    private enum Mode {
+        READ,
+        WRITE
+    }
 
     private static final int INITIAL_READ_BUFFER_CAPACITY = 128;
     private static final int RESIZE_FACTOR = 2;
